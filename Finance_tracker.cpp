@@ -22,6 +22,8 @@ float incomeArr[12] = { 0 };
 float expenseArr[12] = { 0 };
 float balanceArr[12] = { 0 };
 int monthArr[12] = { 0 }; //An array containing the months that the program is working with.
+float total_incomeArr[12] = { 0 };
+float total_expenseArr[12] = { 0 };
 
 
 void Setup(int& numberOfMonths) //Initializes a new financial profile for a number of months specified by the user.
@@ -36,7 +38,7 @@ void Setup(int& numberOfMonths) //Initializes a new financial profile for a numb
 	std::cout << "Profile created succesfully." << std::endl;
 }
 
-void TurnToLet(int month) //Transforms an integer from 1-12 into the designated month.
+void TurnToStr(int month) //Transforms an integer from 1-12 into the designated month.
 {
 	std::string monthInLet;
 	switch (month)
@@ -55,6 +57,26 @@ void TurnToLet(int month) //Transforms an integer from 1-12 into the designated 
 	case 12:  monthInLet = "December"; break;
 	}
 	std::cout << monthInLet;
+}
+
+void TurnToInt(std::string month) //Transforms a month from a string into the corresponding integer from 1-12. 
+{
+	int monthInInt;
+	switch (month)
+	{
+	case "January": monthInInt = 1; break;
+	case "February": monthInInt = 2; break;
+	case "March": monthInInt = 3; break;
+	case "April": monthInInt = 4; break;
+	case "May":  monthInInt = 5; break;
+	case "June":  monthInInt = 6; break;
+	case "July":  monthInInt = 7; break;
+	case "August":  monthInInt = 8; break;
+	case "September":  monthInInt = 9; break;
+	case "October": monthInInt = 10; break;
+	case "November":  monthInInt = 11; break;
+	case "December":  monthInInt = 12; break;
+	}
 }
 
 void Add(int numberOfMonths, int monthArr[], float incomeArr[], float expenseArr[], float balanceArr[]) //Takes the user's input and stores it in order of the months in the designated arreys. 
@@ -94,7 +116,7 @@ void Add(int numberOfMonths, int monthArr[], float incomeArr[], float expenseArr
 
 		float balance = income - expense;
 		std::cout << "Result: Balance for ";
-		TurnToLet(month);
+		TurnToStr(month);
 		std::cout << " = ";
 		if (balance > 0) std::cout << "+" << balance << std::endl;
 		else std::cout << balance << std::endl;
@@ -109,7 +131,7 @@ void Add(int numberOfMonths, int monthArr[], float incomeArr[], float expenseArr
 }
 
 
-void Report(float incomeArr[], float expenseArr[], float balanceArr[])
+void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generates a report for the months selected by the user based on the provided input.
 {
 	float total_income = 0;
 	float total_expense = 0;
@@ -117,10 +139,12 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[])
 	for (int i = 0; i < numberOfMonths; i++)
 	{
 		total_income += incomeArr[i];
+		total_incomeArr[i] = total_income;
 	}
 	for (int i = 0; i < numberOfMonths; i++)
 	{
 		total_expense += expenseArr[i];
+		total_expenseArr[i] = total_expense;
 	}
 	for (int i = 0; i < numberOfMonths; i++)
 	{
@@ -131,8 +155,8 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[])
 	std::cout << "----------------------------------------------------" << std::endl;
 	for (int i = 0; i < numberOfMonths; i++)
 	{
-		TurnToLet(monthArr[i]);
-		std::cout << " | " << incomeArr[i] << " | " << expenseArr[i] << " | ";
+		TurnToStr(monthArr[i]);
+		std::cout << "|" << incomeArr[i] <<" | " << expenseArr[i] << " | ";
 		if (balanceArr[i] > 0) std::cout << "+" << balanceArr[i] << std::endl;
 		else std::cout << balanceArr[i] << std::endl;
 	}
@@ -144,12 +168,26 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[])
 	else std::cout << average_balance << std::endl;
 }
 
+void Search(std::string month) //Discloses information about a selected by the user month.
+{
+	std::cin >> month;
+	TurnToInt(month);
+	std::cout << "Income: " << incomeArr[month] << std::endl;
+	std::cout << "Expense: " << expenseArr[month] << std::endl;
+	std::cout << "Balance: ";
+	if (bakanceArr[month] > 0) std::cout << "+" << bakanceArr[month] << std::endl;
+	else std::cout << bakanceArr[month] << std::endl;
+	float expense_ratio;
+	expense_ratio = (total_expenseArr[month] / total_incomeArr[month]) * 100;
+	std::cout << "Expense ratio: " << expense_ratio << " %";
+}
 
 int main()
 {
 	Setup(numberOfMonths);
 	Add(numberOfMonths, monthArr, incomeArr, expenseArr, balanceArr);
 	Report(incomeArr, expenseArr, balanceArr);
+	Search(month);
 
 	return 0;
 }
