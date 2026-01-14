@@ -18,7 +18,6 @@
 #include <string>
 
 int numberOfMonths = 1; //The number of months for which the program will generate a financial report.
-bool ranCorrectly = false;
 float incomeArr[12] = { 0 };
 float expenseArr[12] = { 0 };
 float balanceArr[12] = { 0 };
@@ -35,7 +34,6 @@ void Setup(int& numberOfMonths) //Initializes a new financial profile for a numb
 		std::cin >> numberOfMonths;
 	}
 	std::cout << "Profile created succesfully." << std::endl;
-	ranCorrectly = true;
 }
 
 void TurnToLet(int month) //Transforms an integer from 1-12 into the designated month.
@@ -43,7 +41,7 @@ void TurnToLet(int month) //Transforms an integer from 1-12 into the designated 
 	std::string monthInLet;
 	switch (month)
 	{
-	case 1: monthInLet = "Jenuary"; break;
+	case 1: monthInLet = "January"; break;
 	case 2: monthInLet = "February"; break;
 	case 3: monthInLet = "March"; break;
 	case 4: monthInLet = "April"; break;
@@ -108,8 +106,6 @@ void Add(int numberOfMonths, int monthArr[], float incomeArr[], float expenseArr
 
 		count++;
 	}
-
-	ranCorrectly = true;
 }
 
 
@@ -135,7 +131,7 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[])
 	std::cout << "----------------------------------------------------" << std::endl;
 	for (int i = 0; i < numberOfMonths; i++)
 	{
-		TurnToLet(monthArr[0]);
+		TurnToLet(monthArr[i]);
 		std::cout << " | " << incomeArr[i] << " | " << expenseArr[i] << " | ";
 		if (balanceArr[i] > 0) std::cout << "+" << balanceArr[i] << std::endl;
 		else std::cout << balanceArr[i] << std::endl;
