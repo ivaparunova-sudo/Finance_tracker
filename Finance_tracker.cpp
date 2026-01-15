@@ -19,10 +19,13 @@
 
 int numberOfMonths = 1; //The number of months for which the program will generate a financial report.
 std::string month;
+std::string type;
 float incomeArr[12] = { 0 };
 float expenseArr[12] = { 0 };
 float balanceArr[12] = { 0 };
 int monthArr[12] = { 0 }; //An array containing the months that the program is working with.
+float total_incomeArr[12] = { 0 };
+float total_expenseArr[12] = { 0 };
 
 
 void Setup(int& numberOfMonths) //Initializes a new financial profile for a number of months specified by the user.
@@ -136,10 +139,12 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 	for (int i = 0; i < numberOfMonths; i++)
 	{
 		total_income += incomeArr[i];
+		total_incomeArr[i] = total_income;
 	}
 	for (int i = 0; i < numberOfMonths; i++)
 	{
 		total_expense += expenseArr[i];
+		total_expenseArr[i] = total_expense;
 	}
 	for (int i = 0; i < numberOfMonths; i++)
 	{
@@ -175,7 +180,48 @@ void Search(std::string month) //Discloses information about a selected by the u
 	else std::cout << balanceArr[TurnToInt(month) - 1] << std::endl;
 	float expense_ratio;
 	expense_ratio = (expenseArr[TurnToInt(month) - 1] / incomeArr[TurnToInt(month) - 1]) * 100;
-	std::cout << "Expense ratio: " << expense_ratio << "%";
+	std::cout << "Expense ratio: " << expense_ratio << "%" << std::endl;
+	std::cout << std::endl;
+}
+
+void Sort(std::string type) //Sorts three of the months by income, expence and balance in descending order.
+{
+	std::cout << "Sort by: ";
+	std::cin >> type;
+	while (type != "income" && type != "expense" && type != "balance")
+	{
+		std::cout << "Wrong input! Please choose from: income, expense or balance." << std::endl;
+		std::cin >> type;
+	}
+	if (type == "income")
+	{
+		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
+		for (int i = 0; i < 3; i++)
+		{
+			TurnToStr(monthArr[i]);
+			std::cout << " : " << incomeArr[i] << std::endl;
+		}
+	}
+	if (type == "expense")
+	{
+		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
+		for (int i = 0; i < 3; i++)
+		{
+			TurnToStr(monthArr[i]);
+			std::cout << " : " << expenseArr[i] << std::endl;
+		}
+	}
+	if (type == "balance")
+	{
+		std::cout << "Sorted by monthly " << type << "(descending) :";
+		for (int i = 0; i < 3; i++)
+		{
+			TurnToStr(monthArr[i]);
+			std::cout << " : ";
+			if (balanceArr[i] > 0) std::cout << "+" << balanceArr[i] << std::endl;
+			else std::cout << balanceArr[i] << std::endl;
+		}
+	}
 }
 
 int main()
@@ -184,5 +230,6 @@ int main()
 	Add(numberOfMonths, monthArr, incomeArr, expenseArr, balanceArr);
 	Report(incomeArr, expenseArr, balanceArr);
 	Search(month);
+	Sort(type);
 	return 0;
 }
