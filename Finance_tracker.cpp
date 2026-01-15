@@ -24,8 +24,7 @@ float incomeArr[12] = { 0 };
 float expenseArr[12] = { 0 };
 float balanceArr[12] = { 0 };
 int monthArr[12] = { 0 }; //An array containing the months that the program is working with.
-float total_incomeArr[12] = { 0 };
-float total_expenseArr[12] = { 0 };
+
 
 
 void Setup(int& numberOfMonths) //Initializes a new financial profile for a number of months specified by the user.
@@ -139,12 +138,10 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 	for (int i = 0; i < numberOfMonths; i++)
 	{
 		total_income += incomeArr[i];
-		total_incomeArr[i] = total_income;
 	}
 	for (int i = 0; i < numberOfMonths; i++)
 	{
 		total_expense += expenseArr[i];
-		total_expenseArr[i] = total_expense;
 	}
 	for (int i = 0; i < numberOfMonths; i++)
 	{
