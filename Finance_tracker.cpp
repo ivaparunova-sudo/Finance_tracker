@@ -18,19 +18,18 @@
 #include <string>
 
 int numberOfMonths = 1; //The number of months for which the program will generate a financial report.
+std::string month;
 float incomeArr[12] = { 0 };
 float expenseArr[12] = { 0 };
 float balanceArr[12] = { 0 };
 int monthArr[12] = { 0 }; //An array containing the months that the program is working with.
-float total_incomeArr[12] = { 0 };
-float total_expenseArr[12] = { 0 };
 
 
 void Setup(int& numberOfMonths) //Initializes a new financial profile for a number of months specified by the user.
 {
 	std::cout << "Enter number of months: ";
 	std::cin >> numberOfMonths;
-	while (numberOfMonths < 1 || numberOfMonths > 12) 
+	while (numberOfMonths < 1 || numberOfMonths > 12)
 	{
 		std::cout << "Invalid number of months! Try again!" << std::endl;
 		std::cin >> numberOfMonths;
@@ -59,29 +58,27 @@ void TurnToStr(int month) //Transforms an integer from 1-12 into the designated 
 	std::cout << monthInLet;
 }
 
-void TurnToInt(std::string month) //Transforms a month from a string into the corresponding integer from 1-12. 
+int TurnToInt(const std::string& month) //Transforms a month from a string into the corresponding integer from 1-12.
 {
-	int monthInInt;
-	switch (month)
-	{
-	case "January": monthInInt = 1; break;
-	case "February": monthInInt = 2; break;
-	case "March": monthInInt = 3; break;
-	case "April": monthInInt = 4; break;
-	case "May":  monthInInt = 5; break;
-	case "June":  monthInInt = 6; break;
-	case "July":  monthInInt = 7; break;
-	case "August":  monthInInt = 8; break;
-	case "September":  monthInInt = 9; break;
-	case "October": monthInInt = 10; break;
-	case "November":  monthInInt = 11; break;
-	case "December":  monthInInt = 12; break;
-	}
+	if (month == "January") return 1;
+	else if (month == "February") return 2;
+	else if (month == "March") return 3;
+	else if (month == "April") return 4;
+	else if (month == "May") return 5;
+	else if (month == "June") return 6;
+	else if (month == "July") return 7;
+	else if (month == "August") return 8;
+	else if (month == "September") return 9;
+	else if (month == "October") return 10;
+	else if (month == "November") return 11;
+	else if (month == "December") return 12;
+
+	return -1; // In case of invalid month.
 }
 
 void Add(int numberOfMonths, int monthArr[], float incomeArr[], float expenseArr[], float balanceArr[]) //Takes the user's input and stores it in order of the months in the designated arreys. 
 {
-	int count = 0; 
+	int count = 0;
 	while (count < numberOfMonths)
 	{
 		int month;
@@ -139,12 +136,10 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 	for (int i = 0; i < numberOfMonths; i++)
 	{
 		total_income += incomeArr[i];
-		total_incomeArr[i] = total_income;
 	}
 	for (int i = 0; i < numberOfMonths; i++)
 	{
 		total_expense += expenseArr[i];
-		total_expenseArr[i] = total_expense;
 	}
 	for (int i = 0; i < numberOfMonths; i++)
 	{
@@ -156,7 +151,7 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 	for (int i = 0; i < numberOfMonths; i++)
 	{
 		TurnToStr(monthArr[i]);
-		std::cout << "|" << incomeArr[i] <<" | " << expenseArr[i] << " | ";
+		std::cout << "|" << incomeArr[i] << " | " << expenseArr[i] << " | ";
 		if (balanceArr[i] > 0) std::cout << "+" << balanceArr[i] << std::endl;
 		else std::cout << balanceArr[i] << std::endl;
 	}
@@ -166,20 +161,21 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 	std::cout << "Average balance: ";
 	if (average_balance > 0) std::cout << "+" << average_balance << std::endl;
 	else std::cout << average_balance << std::endl;
+	std::cout << std::endl;
 }
 
 void Search(std::string month) //Discloses information about a selected by the user month.
 {
+	std::cout << "Search: ";
 	std::cin >> month;
-	TurnToInt(month);
-	std::cout << "Income: " << incomeArr[month] << std::endl;
-	std::cout << "Expense: " << expenseArr[month] << std::endl;
+	std::cout << "Income: " << incomeArr[TurnToInt(month) - 1] << std::endl;
+	std::cout << "Expense: " << expenseArr[TurnToInt(month) - 1] << std::endl;
 	std::cout << "Balance: ";
-	if (bakanceArr[month] > 0) std::cout << "+" << bakanceArr[month] << std::endl;
-	else std::cout << bakanceArr[month] << std::endl;
+	if (balanceArr[TurnToInt(month) - 1] > 0) std::cout << "+" << balanceArr[TurnToInt(month) - 1] << std::endl;
+	else std::cout << balanceArr[TurnToInt(month) - 1] << std::endl;
 	float expense_ratio;
-	expense_ratio = (total_expenseArr[month] / total_incomeArr[month]) * 100;
-	std::cout << "Expense ratio: " << expense_ratio << " %";
+	expense_ratio = (expenseArr[TurnToInt(month) - 1] / incomeArr[TurnToInt(month) - 1]) * 100;
+	std::cout << "Expense ratio: " << expense_ratio << "%";
 }
 
 int main()
@@ -188,6 +184,5 @@ int main()
 	Add(numberOfMonths, monthArr, incomeArr, expenseArr, balanceArr);
 	Report(incomeArr, expenseArr, balanceArr);
 	Search(month);
-
 	return 0;
 }
