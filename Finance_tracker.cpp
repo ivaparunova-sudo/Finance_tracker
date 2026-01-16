@@ -95,18 +95,38 @@ void SwapInt(int& a, int& b) //Switches the values of two integers.
 void Add(int numberOfMonths, int monthArr[], float incomeArr[], float expenseArr[], float balanceArr[]) //Takes the user's input and stores it in order of the months in the designated arreys. 
 {
 	int count = 0;
-	while (count < numberOfMonths)
+	while (count < numberOfMonths) //This allows months to be added in any order while storing them consecutively, regardless of the starting month.
 	{
 		int month;
 		float expense, income;
 
-		std::cout << "Enter month (1-12): "; //The number represents the month’s position within the year.
+		std::cout << "Enter month (1-12): "; //The number represents the month's position within the year.
 		std::cin >> month;
 
-		while (month < 1 || month > 12)
+		bool valid_month = false; //Checks if the month is correct or if it has already been added.
+
+		while (!valid_month)
 		{
-			std::cout << "Wrong input! Try again: ";
-			std::cin >> month;
+			valid_month = true;
+			if (month < 1 || month > 12) //Checks if it's a real month.
+			{
+				valid_month = false;
+			}
+			for (int i = 0; i < count; i++) //Checks if it's already added.
+			{
+				if (monthArr[i] == month)
+					valid_month = false;
+			}
+			//for (int i = 0; i < count; i++) //Checks if the monts being added are consecutive.
+			//{
+			//	if (!(numberOfMonths-monthArr[i]<=numberOfMonths-1))
+			//		valid_month = false;
+			//}
+			if (!valid_month)
+			{
+				std::cout << "Invalid or duplicate month! Try again: ";
+				std::cin >> month;
+			}
 		}
 
 		std::cout << "Enter income: ";
@@ -182,7 +202,7 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 
 void Search(std::string month) //Discloses information about a selected by the user month.
 {
-	std::cout << "Search: ";
+	std::cout << "Pick a month: ";
 	std::cin >> month;
 	std::cout << "Income: " << incomeArr[TurnToInt(month) - 1] << std::endl;
 	std::cout << "Expense: " << expenseArr[TurnToInt(month) - 1] << std::endl;
@@ -294,7 +314,7 @@ int main()
 	std::cout << "Hello to your Finance tracker program!" << std::endl;
 	std::cout << "Let's set it up!" << std::endl;
 	Setup(numberOfMonths);
-	std::cout << "Now for each month add the income and expense!" << std::endl;
+	std::cout << "Now for each consecutive month add the income and expense!" << std::endl;
 	Add(numberOfMonths, monthArr, incomeArr, expenseArr, balanceArr);
 	std::cout << "Choose what you want to see next! Do you want to:" << std::endl;
 	std::cout << "See a generated report on your finances, search information about a specific month or see the three months with the highest income, expense or balance values?" << std::endl;
@@ -302,13 +322,9 @@ int main()
 	std::cout << "If you want to end the program write: End" << std::endl;
 	std::string selected_function;
 	std::cin >> selected_function;
+	std::cout << std::endl;
 	while (selected_function != "Report" && selected_function != "Search" && selected_function != "Sort")
 	{
-		if (selected_function == "End")
-		{
-			ClearScreen();
-			std::cout << "Thank you for useing my program! :) ";
-		}
 		std::cout << "Wrong input! Please try again!";
 		std::cin >> selected_function;
 	}
@@ -326,8 +342,14 @@ int main()
 		{
 			Sort(type);
 		}
-		std::cout << "Pick again!";
+		std::cout << "Pick again!" << std::endl;
+		std::cout << std::endl;
 		std::cin >> selected_function;
+		if (selected_function == "End")
+		{
+			ClearScreen();
+			std::cout << "Thank you for useing my program! :) ";
+		}
 	}
 	return 0;
 }
