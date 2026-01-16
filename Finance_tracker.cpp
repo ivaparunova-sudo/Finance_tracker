@@ -78,6 +78,20 @@ int TurnToInt(const std::string& month) //Transforms a month from a string into 
 	return -1; // In case of invalid month.
 }
 
+void SwapFlo(float& a, float& b) //Switches the values of two floats.
+{
+	float temp = a;
+	a = b;
+	b = temp;
+}
+
+void SwapInt(int& a, int& b) //Switches the values of two integers.
+{
+	int temp = a;
+	a = b;
+	b = temp;
+}
+
 void Add(int numberOfMonths, int monthArr[], float incomeArr[], float expenseArr[], float balanceArr[]) //Takes the user's input and stores it in order of the months in the designated arreys. 
 {
 	int count = 0;
@@ -181,7 +195,7 @@ void Search(std::string month) //Discloses information about a selected by the u
 	std::cout << std::endl;
 }
 
-void Sort(std::string type) //Sorts three of the months by income, expence and balance in descending order.
+void Sort(std::string type) //Sorts the three months with the highest income, expense or balance values in descending order.
 {
 	std::cout << "Sort by: ";
 	std::cin >> type;
@@ -190,33 +204,82 @@ void Sort(std::string type) //Sorts three of the months by income, expence and b
 		std::cout << "Wrong input! Please choose from: income, expense or balance." << std::endl;
 		std::cin >> type;
 	}
+	float tempIncome[12], tempExpense[12], tempBalance[12]; // Initializing copies of the arrays so that the original order is preserved.
+	int tempMonth[12];
+	for (int i = 0; i < numberOfMonths; i++)
+	{
+		tempIncome[i] = incomeArr[i];
+		tempExpense[i] = expenseArr[i];
+		tempBalance[i] = balanceArr[i];
+		tempMonth[i] = monthArr[i];
+	}
+	int limit = (numberOfMonths < 3) ? numberOfMonths : 3; //Makes sure that if the program works with only two months there doesn't occur an error.
 	if (type == "income")
 	{
-		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < numberOfMonths; i++)
 		{
-			TurnToStr(monthArr[i]);
-			std::cout << " : " << incomeArr[i] << std::endl;
+			for (int j = i + 1; j < numberOfMonths; j++)
+			{
+				if (tempIncome[i] < tempIncome[j]) //Sorting in descending order by switching up the places of the values in each arrey.
+				{
+					SwapFlo(tempIncome[i], tempIncome[j]);
+					SwapFlo(tempExpense[i], tempExpense[j]);
+					SwapFlo(tempBalance[i], tempBalance[j]);
+					SwapInt(tempMonth[i], tempMonth[j]);
+				}
+			}
+		}
+		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
+		for (int i = 0; i < limit; i++)
+		{
+			TurnToStr(tempMonth[i]);
+			std::cout << " : " << tempIncome[i] << std::endl;
 		}
 	}
-	if (type == "expense")
+	else if (type == "expense")
 	{
-		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < numberOfMonths; i++)
 		{
-			TurnToStr(monthArr[i]);
-			std::cout << " : " << expenseArr[i] << std::endl;
+			for (int j = i + 1; j < numberOfMonths; j++)
+			{
+				if (tempExpense[i] < tempExpense[j])
+				{
+					SwapFlo(tempExpense[i], tempExpense[j]);
+					SwapFlo(tempIncome[i], tempIncome[j]);
+					SwapFlo(tempBalance[i], tempBalance[j]);
+					SwapInt(tempMonth[i], tempMonth[j]);
+				}
+			}
+		}
+		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
+		for (int i = 0; i < limit; i++)
+		{
+			TurnToStr(tempMonth[i]);
+			std::cout << " : " << tempExpense[i] << std::endl;
 		}
 	}
-	if (type == "balance")
+	else if (type == "balance")
 	{
-		std::cout << "Sorted by monthly " << type << "(descending) :";
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < numberOfMonths; i++)
 		{
-			TurnToStr(monthArr[i]);
+			for (int j = i + 1; j < numberOfMonths; j++)
+			{
+				if (tempBalance[i] < tempBalance[j])
+				{
+					SwapFlo(tempBalance[i], tempBalance[j]);
+					SwapFlo(tempExpense[i], tempExpense[j]);
+					SwapFlo(tempIncome[i], tempIncome[j]);
+					SwapInt(tempMonth[i], tempMonth[j]);
+				}
+			}
+		}
+		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
+		for (int i = 0; i < limit; i++)
+		{
+			TurnToStr(tempMonth[i]);
 			std::cout << " : ";
-			if (balanceArr[i] > 0) std::cout << "+" << balanceArr[i] << std::endl;
-			else std::cout << balanceArr[i] << std::endl;
+			if (tempBalance[i] > 0) std::cout << "+" << tempBalance[i] << std::endl;
+			else std::cout << tempBalance[i] << std::endl;
 		}
 	}
 }
