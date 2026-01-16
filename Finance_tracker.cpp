@@ -284,26 +284,38 @@ void Sort(std::string type) //Sorts the three months with the highest income, ex
 	}
 }
 
+void ClearScreen() //Clears the output window.
+{
+	system("CLS");
+}
+
 int main()
 {
 	std::cout << "Hello to your Finance tracker program!" << std::endl;
 	std::cout << "Let's set it up!" << std::endl;
 	Setup(numberOfMonths);
-	std::cout << "Now for each month add the income and expense!"<< std::endl;
+	std::cout << "Now for each month add the income and expense!" << std::endl;
 	Add(numberOfMonths, monthArr, incomeArr, expenseArr, balanceArr);
 	std::cout << "Choose what you want to see next! Do you want to:" << std::endl;
 	std::cout << "See a generated report on your finances, search information about a specific month or see the three months with the highest income, expense or balance values?" << std::endl;
 	std::cout << "To proceed pick one of the following: Report, Search, Sort;" << std::endl;
-	std::cout << "If you want to end the program write: End";
+	std::cout << "If you want to end the program write: End" << std::endl;
 	std::string selected_function;
 	std::cin >> selected_function;
 	while (selected_function != "Report" && selected_function != "Search" && selected_function != "Sort")
 	{
+		if (selected_function == "End")
+		{
+			ClearScreen();
+			std::cout << "Thank you for useing my program! :) ";
+		}
 		std::cout << "Wrong input! Please try again!";
 		std::cin >> selected_function;
 	}
 	while (selected_function != "End")
 	{
+		std::cout << "Pick again!";
+		std::cin >> selected_function;
 		if (selected_function == "Report")
 		{
 			Report(incomeArr, expenseArr, balanceArr);
