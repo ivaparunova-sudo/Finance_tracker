@@ -314,8 +314,6 @@ int main()
 	}
 	while (selected_function != "End")
 	{
-		std::cout << "Pick again!";
-		std::cin >> selected_function;
 		if (selected_function == "Report")
 		{
 			Report(incomeArr, expenseArr, balanceArr);
@@ -328,6 +326,8 @@ int main()
 		{
 			Sort(type);
 		}
+		std::cout << "Pick again!";
+		std::cin >> selected_function;
 	}
 	return 0;
 }
