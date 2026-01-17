@@ -158,10 +158,9 @@ void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanc
 			{
 				valid_month = false;
 			}
-			for (int i = 0; i < count; i++) //Checks if it's already added.
+			if (monthArr[month - 1] != 0) //Checks if it's already added.
 			{
-				if (monthArr[i] == month)
-					valid_month = false;
+				valid_month = false;
 			}
 
 			if (!valid_month)
@@ -294,11 +293,11 @@ void Search(std::string month) //Discloses information about a selected by the u
 	if (balanceArr[TurnToInt(month) - 1] > 0) std::cout << "+" << balanceArr[TurnToInt(month) - 1] << std::endl;
 	else std::cout << balanceArr[TurnToInt(month) - 1] << std::endl;
 	float expense_ratio;
-	if ((incomeArr[TurnToInt(month) - 1) == 0)
+	if (incomeArr[TurnToInt(month) - 1] == 0)
 	{
 		std::cout << "Expense ratio is undefined (income is 0).";
 	}
-	else if ((incomeArr[TurnToInt(month) - 1) != 0)
+	else if ((incomeArr[TurnToInt(month) - 1]) != 0)
 	{
 		expense_ratio = (expenseArr[TurnToInt(month) - 1] / incomeArr[TurnToInt(month) - 1]) * 100;
 		std::cout << "Expense ratio: " << expense_ratio << "%" << std::endl;
@@ -424,16 +423,16 @@ void Forecast(int months_ahead)
 	int earliest = 13, latest = 0; //Initialized variables to determine the earliest and the latest month:
 	int earliestIndex = -1, latestIndex = -1;
 
-	for (int i = 0; i < 12; i++) 
+	for (int i = 0; i < 12; i++)
 	{
-		if (monthArr[i] != 0) 
+		if (monthArr[i] != 0)
 		{
-			if (monthArr[i] < earliest) 
+			if (monthArr[i] < earliest)
 			{
 				earliest = monthArr[i];
 				earliestIndex = i;
 			}
-			if (monthArr[i] > latest) 
+			if (monthArr[i] > latest)
 			{
 				latest = monthArr[i];
 				latestIndex = i;
@@ -442,11 +441,11 @@ void Forecast(int months_ahead)
 	}
 
 	float average_monthly_change = 0;
-	if (numberOfMonths > 1 && earliestIndex != -1 && latestIndex != -1) 
+	if (numberOfMonths > 1 && earliestIndex != -1 && latestIndex != -1)
 	{
 		float total_change = balanceArr[latestIndex] - balanceArr[earliestIndex];
 		int months_between = latest - earliest;
-		if (months_between > 0) 
+		if (months_between > 0)
 		{
 			average_monthly_change = total_change / months_between;
 		}
@@ -534,3 +533,4 @@ int main()
 	}
 	return 0;
 }
+
