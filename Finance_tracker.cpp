@@ -25,20 +25,6 @@ float expenseArr[12] = { 0 };
 float balanceArr[12] = { 0 };
 int monthArr[12] = { 0 }; //An array containing the months that the program is working with.
 
-
-
-void Setup(int& numberOfMonths) //Initializes a new financial profile for a number of months specified by the user.
-{
-	std::cout << "Enter number of months: ";
-	std::cin >> numberOfMonths;
-	while (numberOfMonths < 1 || numberOfMonths > 12)
-	{
-		std::cout << "Invalid number of months! Try again!" << std::endl;
-		std::cin >> numberOfMonths;
-	}
-	std::cout << "Profile created succesfully." << std::endl;
-}
-
 void TurnToStr(int month) //Transforms an integer from 1-12 into the designated month.
 {
 	std::string monthInLet;
@@ -92,7 +78,42 @@ void SwapInt(int& a, int& b) //Switches the values of two integers.
 	b = temp;
 }
 
-void Add(int numberOfMonths, int monthArr[], float incomeArr[], float expenseArr[], float balanceArr[]) //Takes the user's input and stores it in order of the months in the designated arreys. 
+bool areMonthsConsecutive(int monthArr[], int count) //Checks if the months the program is working with are concequitive.
+{
+	int min = monthArr[0];
+	int max = monthArr[0];
+
+	for (int i = 1; i < count; i++)
+	{
+		if (monthArr[i] < min) min = monthArr[i];
+		if (monthArr[i] > max) max = monthArr[i];
+	}
+
+	if (max - min != count - 1)
+	{
+		return false;
+	}
+	return true;
+}
+
+void ClearScreen() //Clears the output window.
+{
+	system("CLS");
+}
+
+void Setup(int& numberOfMonths) //Initializes a new financial profile for a number of months specified by the user.
+{
+	std::cout << "Enter number of months: ";
+	std::cin >> numberOfMonths;
+	while (numberOfMonths < 1 || numberOfMonths > 12)
+	{
+		std::cout << "Invalid number of months! Try again!" << std::endl;
+		std::cin >> numberOfMonths;
+	}
+	std::cout << "Profile created succesfully." << std::endl;
+}
+
+void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanceArr[]) //Takes the user's input and stores it in order of the months in the designated arreys. 
 {
 	int count = 0;
 	while (count < numberOfMonths) //This allows months to be added in any order while storing them consecutively, regardless of the starting month.
@@ -117,11 +138,6 @@ void Add(int numberOfMonths, int monthArr[], float incomeArr[], float expenseArr
 				if (monthArr[i] == month)
 					valid_month = false;
 			}
-			//for (int i = 0; i < count; i++) //Checks if the monts being added are consecutive.
-			//{
-			//	if (!(numberOfMonths-monthArr[i]<=numberOfMonths-1))
-			//		valid_month = false;
-			//}
 			if (!valid_month)
 			{
 				std::cout << "Invalid or duplicate month! Try again: ";
@@ -161,6 +177,13 @@ void Add(int numberOfMonths, int monthArr[], float incomeArr[], float expenseArr
 
 		count++;
 	}
+	if (!areMonthsConsecutive(monthArr, numberOfMonths))
+	{
+		ClearScreen();
+		std::cout << "Months were not consecutive! So the program couldn't function properly. Please try again!" << std::endl;
+		Setup(numberOfMonths);
+		Add(numberOfMonths, incomeArr, expenseArr, balanceArr);
+	}
 }
 
 
@@ -169,6 +192,7 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 	float total_income = 0;
 	float total_expense = 0;
 	float total_balance = 0;
+
 	for (int i = 0; i < numberOfMonths; i++)
 	{
 		total_income += incomeArr[i];
@@ -184,8 +208,14 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 	float average_balance = (total_balance / numberOfMonths);
 	std::cout << "   Month    |   Income   |   Expense   |   Balance  " << std::endl;
 	std::cout << "----------------------------------------------------" << std::endl;
-	for (int i = 0; i < numberOfMonths; i++)
+	int temp = numberOfMonths; //It keeps the original value of numberOfMonths intact.
+	for (int i = 0; i < temp; i++)
 	{
+		if (monthArr[i] == 0) //Skips the months in the arrey that are not part of the program.
+		{
+			temp++;
+			continue;
+		}
 		TurnToStr(monthArr[i]);
 		std::cout << "|" << incomeArr[i] << " | " << expenseArr[i] << " | ";
 		if (balanceArr[i] > 0) std::cout << "+" << balanceArr[i] << std::endl;
@@ -304,18 +334,13 @@ void Sort(std::string type) //Sorts the three months with the highest income, ex
 	}
 }
 
-void ClearScreen() //Clears the output window.
-{
-	system("CLS");
-}
-
 int main()
 {
-	std::cout << "Hello to your Finance tracker program!" << std::endl;
+	std::cout << "Hello! Wellcome to your Finance tracker program!" << std::endl;
 	std::cout << "Let's set it up!" << std::endl;
 	Setup(numberOfMonths);
 	std::cout << "Now for each consecutive month add the income and expense!" << std::endl;
-	Add(numberOfMonths, monthArr, incomeArr, expenseArr, balanceArr);
+	Add(numberOfMonths, incomeArr, expenseArr, balanceArr);
 	std::cout << "Choose what you want to see next! Do you want to:" << std::endl;
 	std::cout << "See a generated report on your finances, search information about a specific month or see the three months with the highest income, expense or balance values?" << std::endl;
 	std::cout << "To proceed pick one of the following: Report, Search, Sort;" << std::endl;
