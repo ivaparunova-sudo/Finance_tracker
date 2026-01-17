@@ -79,7 +79,13 @@ void SwapInt(int& a, int& b) //Switches the values of two integers.
 	b = temp;
 }
 
-float Abs(float& a) //Returns absolute value of the entered float.
+float AbsForFlo(float& a) //Returns absolute value of the entered float.
+{
+	if (a < 0) return a * (-1);
+	else return a;
+}
+
+int AbsForInt(int& a) //Returns absolute value of the entered int.
 {
 	if (a < 0) return a * (-1);
 	else return a;
@@ -96,7 +102,7 @@ bool areMonthsConsecutive(int monthArr[], int count) //Checks if the months the 
 		if (monthArr[i] > max) max = monthArr[i];
 	}
 
-	if (max - min != count - 1)
+	if (max - min + 1 != count)
 	{
 		return false;
 	}
@@ -184,13 +190,13 @@ void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanc
 
 		count++;
 	}
-	if (!areMonthsConsecutive(monthArr, numberOfMonths))
+	/*if (!areMonthsConsecutive(monthArr, numberOfMonths))
 	{
 		ClearScreen();
 		std::cout << "Months were not consecutive! So the program couldn't function properly. Please try again!" << std::endl;
 		Setup(numberOfMonths);
 		Add(numberOfMonths, incomeArr, expenseArr, balanceArr);
-	}
+	}*/
 }
 
 
@@ -289,6 +295,12 @@ void Sort(std::string type) //Sorts the three months with the highest income, ex
 		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
 		for (int i = 0; i < limit; i++)
 		{
+			int temp = numberOfMonths;
+			if (tempMonth[i] == 0)
+			{
+				temp++;
+				continue;
+			}
 			TurnToStr(tempMonth[i]);
 			std::cout << " : " << tempIncome[i] << std::endl;
 		}
@@ -311,6 +323,12 @@ void Sort(std::string type) //Sorts the three months with the highest income, ex
 		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
 		for (int i = 0; i < limit; i++)
 		{
+			int temp = numberOfMonths;
+			if (tempMonth[i] == 0)
+			{
+				temp++;
+				continue;
+			}
 			TurnToStr(tempMonth[i]);
 			std::cout << " : " << tempExpense[i] << std::endl;
 		}
@@ -333,6 +351,12 @@ void Sort(std::string type) //Sorts the three months with the highest income, ex
 		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
 		for (int i = 0; i < limit; i++)
 		{
+			int temp = numberOfMonths;
+			if (tempMonth[i] == 0)
+			{
+				temp++;
+				continue;
+			}
 			TurnToStr(tempMonth[i]);
 			std::cout << " : ";
 			if (tempBalance[i] > 0) std::cout << "+" << tempBalance[i] << std::endl;
@@ -357,21 +381,32 @@ void Forecast(int months_ahead)
 	}
 	average_monthly_change = monthly_change / (numberOfMonths - 1);
 
-	if (current_savings > 0)
+	if (average_monthly_change > 0)
 	{
+		std::cout << "Enter for how many months ahead you wish the program to predict your saveings: ";
+		std::cin >> months_ahead;
+		while (months_ahead < 1)
+		{
+			std::cout << "Incorrect input! Enter a number grater than 0.";
+			std::cin >> months_ahead;
+		}
 		float predicted_savings;
 		predicted_savings = current_savings + months_ahead * average_monthly_change;
-		std::cout << "Your current savings are: " << current_savings;
-		std::cout << "Your average monthly change is: +" << average_monthly_change;
-		std::cout << "Predicted savings after " << months_ahead << " months : " << predicted_savings;
+		std::cout << "Your current savings are: " << current_savings << std::endl;
+		std::cout << "Your average monthly change is: +" << average_monthly_change << std::endl;
+		std::cout << "Predicted savings after " << months_ahead << " months : " << predicted_savings << std::endl;
 	}
-	else if (current_savings < 0)
+	else if (average_monthly_change < 0)
 	{
-		float months_till_no_money;
-		months_till_no_money = current_savings / Abs(average_monthly_change);
-		std::cout << "Your current savings are: " << current_savings;
-		std::cout << "Your average monthly change is: " << average_monthly_change;
-		std::cout << "Expected to run out of money after " << months_till_no_money << " months.";
+		int months_till_no_money;
+		months_till_no_money = current_savings / AbsForFlo(average_monthly_change);
+		std::cout << "Your current savings are: " << current_savings << std::endl;
+		std::cout << "Your average monthly change is: " << average_monthly_change << std::endl;
+		std::cout << "Expected to run out of money after " << AbsForInt(months_till_no_money) << " months." << std::endl;
+	}
+	else if (current_savings == 0)
+	{
+		std::cout << "You have no current saveings, so the program is unable to form a forecast.";
 	}
 }
 
@@ -408,7 +443,7 @@ int main()
 		{
 			Sort(type);
 		}
-		else if (selected_function == "Sort")
+		else if (selected_function == "Forecast")
 		{
 			Forecast(months_ahead);
 		}
