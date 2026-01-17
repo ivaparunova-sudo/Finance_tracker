@@ -24,6 +24,7 @@ float incomeArr[12] = { 0 };
 float expenseArr[12] = { 0 };
 float balanceArr[12] = { 0 };
 int monthArr[12] = { 0 }; //An array containing the months that the program is working with.
+int months_ahead = 0;
 
 void TurnToStr(int month) //Transforms an integer from 1-12 into the designated month.
 {
@@ -76,6 +77,12 @@ void SwapInt(int& a, int& b) //Switches the values of two integers.
 	int temp = a;
 	a = b;
 	b = temp;
+}
+
+float Abs(float& a) //Returns absolute value of the entered float.
+{
+	if (a < 0) return a * (-1);
+	else return a;
 }
 
 bool areMonthsConsecutive(int monthArr[], int count) //Checks if the months the program is working with are concequitive.
@@ -334,6 +341,40 @@ void Sort(std::string type) //Sorts the three months with the highest income, ex
 	}
 }
 
+void Forecast(int months_ahead)
+{
+	float current_savings = 0;
+	for (int i = 0; i < numberOfMonths; i++)
+	{
+		current_savings += balanceArr[i];
+	}
+
+	float average_monthly_change = 0;
+	float monthly_change = 0;
+	for (int i = 0; i < numberOfMonths; i++)
+	{
+		monthly_change += (balanceArr[i + 1] - balanceArr[i]);
+	}
+	average_monthly_change = monthly_change / (numberOfMonths - 1);
+
+	if (current_savings > 0)
+	{
+		float predicted_savings;
+		predicted_savings = current_savings + months_ahead * average_monthly_change;
+		std::cout << "Your current savings are: " << current_savings;
+		std::cout << "Your average monthly change is: +" << average_monthly_change;
+		std::cout << "Predicted savings after " << months_ahead << " months : " << predicted_savings;
+	}
+	else if (current_savings < 0)
+	{
+		float months_till_no_money;
+		months_till_no_money = current_savings / Abs(average_monthly_change);
+		std::cout << "Your current savings are: " << current_savings;
+		std::cout << "Your average monthly change is: " << average_monthly_change;
+		std::cout << "Expected to run out of money after " << months_till_no_money << " months.";
+	}
+}
+
 int main()
 {
 	std::cout << "Hello! Wellcome to your Finance tracker program!" << std::endl;
@@ -343,12 +384,12 @@ int main()
 	Add(numberOfMonths, incomeArr, expenseArr, balanceArr);
 	std::cout << "Choose what you want to see next! Do you want to:" << std::endl;
 	std::cout << "See a generated report on your finances, search information about a specific month or see the three months with the highest income, expense or balance values?" << std::endl;
-	std::cout << "To proceed pick one of the following: Report, Search, Sort;" << std::endl;
-	std::cout << "If you want to end the program write: End" << std::endl;
+	std::cout << "To proceed pick one of the following: Report, Search, Sort, Forecast;" << std::endl;
+	std::cout << "If you want to end the program write: End;" << std::endl;
 	std::string selected_function;
 	std::cin >> selected_function;
 	std::cout << std::endl;
-	while (selected_function != "Report" && selected_function != "Search" && selected_function != "Sort")
+	while (selected_function != "Report" && selected_function != "Search" && selected_function != "Sort" && selected_function != "Forecast")
 	{
 		std::cout << "Wrong input! Please try again!";
 		std::cin >> selected_function;
@@ -366,6 +407,10 @@ int main()
 		else if (selected_function == "Sort")
 		{
 			Sort(type);
+		}
+		else if (selected_function == "Sort")
+		{
+			Forecast(months_ahead);
 		}
 		std::cout << "Pick again!" << std::endl;
 		std::cout << std::endl;
