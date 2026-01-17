@@ -79,13 +79,13 @@ void SwapInt(int& a, int& b) //Switches the values of two integers.
 	b = temp;
 }
 
-float AbsForFlo(float& a) //Returns absolute value of the entered float.
+float AbsForFlo(float a) //Returns absolute value of the entered float.
 {
 	if (a < 0) return a * (-1);
 	else return a;
 }
 
-int AbsForInt(int& a) //Returns absolute value of the entered int.
+int AbsForInt(int a) //Returns absolute value of the entered int.
 {
 	if (a < 0) return a * (-1);
 	else return a;
@@ -116,12 +116,20 @@ void ClearScreen() //Clears the output window.
 
 void Setup(int& numberOfMonths) //Initializes a new financial profile for a number of months specified by the user.
 {
-	std::cout << "Enter number of months: ";
+	std::cout << "Enter a number of months: ";
 	std::cin >> numberOfMonths;
-	while (numberOfMonths < 1 || numberOfMonths > 12)
+	while (numberOfMonths < 2 || numberOfMonths > 12)
 	{
-		std::cout << "Invalid number of months! Try again!" << std::endl;
-		std::cin >> numberOfMonths;
+		if (numberOfMonths == 1)
+		{
+			std::cout << "Not enough data for the program to operate properly. Enter another number: ";
+			std::cin >> numberOfMonths;
+		}
+		else if (numberOfMonths != 1)
+		{
+			std::cout << "Invalid number of months! Try again! " << std::endl;
+			std::cin >> numberOfMonths;
+		}
 	}
 	std::cout << "Profile created succesfully." << std::endl;
 }
@@ -151,6 +159,10 @@ void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanc
 				if (monthArr[i] == month)
 					valid_month = false;
 			}
+			/*if (monthArr[month - 1] != 0)
+			{
+				valid_month = false;
+			}*/
 			if (!valid_month)
 			{
 				std::cout << "Invalid or duplicate month! Try again: ";
@@ -208,15 +220,24 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 
 	for (int i = 0; i < numberOfMonths; i++)
 	{
-		total_income += incomeArr[i];
+		if (monthArr[i] != 0) //Checks if the month is part of the current data the program is working with.
+		{
+			total_income += incomeArr[i];
+		}
 	}
 	for (int i = 0; i < numberOfMonths; i++)
 	{
-		total_expense += expenseArr[i];
+		if (monthArr[i] != 0)
+		{
+			total_expense += expenseArr[i];
+		}
 	}
 	for (int i = 0; i < numberOfMonths; i++)
 	{
-		total_balance += balanceArr[i];
+		if (monthArr[i] != 0)
+		{
+			total_balance += balanceArr[i];
+		}
 	}
 	float average_balance = (total_balance / numberOfMonths);
 	std::cout << "   Month    |   Income   |   Expense   |   Balance  " << std::endl;
@@ -247,6 +268,25 @@ void Search(std::string month) //Discloses information about a selected by the u
 {
 	std::cout << "Pick a month: ";
 	std::cin >> month;
+	bool month_in_monthArr = false;
+	while (!month_in_monthArr)
+	{
+		month_in_monthArr = false; // Resets the validation process.
+		for (int i = 0; i < numberOfMonths; i++)
+		{
+			if (monthArr[i] == TurnToInt(month))
+			{
+				month_in_monthArr = true;
+				break;
+			}
+		}
+
+		if (!month_in_monthArr)
+		{
+			std::cout << "Month isn't a part of the data. Pick a new month: ";
+			std::cin >> month;
+		}
+	}
 	std::cout << "Income: " << incomeArr[TurnToInt(month) - 1] << std::endl;
 	std::cout << "Expense: " << expenseArr[TurnToInt(month) - 1] << std::endl;
 	std::cout << "Balance: ";
@@ -375,7 +415,7 @@ void Forecast(int months_ahead)
 
 	float average_monthly_change = 0;
 	float monthly_change = 0;
-	for (int i = 0; i < numberOfMonths; i++)
+	for (int i = 0; i < numberOfMonths-1; i++)
 	{
 		monthly_change += (balanceArr[i + 1] - balanceArr[i]);
 	}
@@ -383,7 +423,7 @@ void Forecast(int months_ahead)
 
 	if (average_monthly_change > 0)
 	{
-		std::cout << "Enter for how many months ahead you wish the program to predict your saveings: ";
+		std::cout << "Enter for how many months ahead you wish the program to predict your savings: ";
 		std::cin >> months_ahead;
 		while (months_ahead < 1)
 		{
@@ -404,15 +444,15 @@ void Forecast(int months_ahead)
 		std::cout << "Your average monthly change is: " << average_monthly_change << std::endl;
 		std::cout << "Expected to run out of money after " << AbsForInt(months_till_no_money) << " months." << std::endl;
 	}
-	else if (current_savings == 0)
+	else if (average_monthly_change == 0)
 	{
-		std::cout << "You have no current saveings, so the program is unable to form a forecast.";
+		std::cout << "Your balance is stable. No significant changes expected." << std::endl;
 	}
 }
 
 int main()
 {
-	std::cout << "Hello! Wellcome to your Finance tracker program!" << std::endl;
+	std::cout << "Hello! Welcome to your Finance tracker program!" << std::endl;
 	std::cout << "Let's set it up!" << std::endl;
 	Setup(numberOfMonths);
 	std::cout << "Now for each consecutive month add the income and expense!" << std::endl;
@@ -453,7 +493,7 @@ int main()
 		if (selected_function == "End")
 		{
 			ClearScreen();
-			std::cout << "Thank you for useing my program! :) ";
+			std::cout << "Thank you for using my program! :) ";
 		}
 	}
 	return 0;
