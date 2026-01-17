@@ -91,22 +91,26 @@ int AbsForInt(int a) //Returns absolute value of the entered int.
 	else return a;
 }
 
-bool areMonthsConsecutive(int monthArr[], int count) //Checks if the months the program is working with are concequitive.
+bool areMonthsConsecutive(int monthArr[], int numberOfMonths)
 {
-	int min = monthArr[0];
-	int max = monthArr[0];
+	int min = 13;
+	int max = 0;
+	int count = 0;
 
-	for (int i = 1; i < count; i++)
+	for (int i = 0; i < 12; i++)
 	{
-		if (monthArr[i] < min) min = monthArr[i];
-		if (monthArr[i] > max) max = monthArr[i];
+		if (monthArr[i] != 0)
+		{
+			count++;
+			if (monthArr[i] < min) min = monthArr[i];
+			if (monthArr[i] > max) max = monthArr[i];
+		}
 	}
 
-	if (max - min + 1 != count)
-	{
+	if (count != numberOfMonths)
 		return false;
-	}
-	return true;
+
+	return (max - min + 1 == count);
 }
 
 void ClearScreen() //Clears the output window.
@@ -159,10 +163,7 @@ void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanc
 				if (monthArr[i] == month)
 					valid_month = false;
 			}
-			/*if (monthArr[month - 1] != 0)
-			{
-				valid_month = false;
-			}*/
+
 			if (!valid_month)
 			{
 				std::cout << "Invalid or duplicate month! Try again: ";
@@ -202,13 +203,13 @@ void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanc
 
 		count++;
 	}
-	/*if (!areMonthsConsecutive(monthArr, numberOfMonths))
+	if (!areMonthsConsecutive(monthArr, numberOfMonths))
 	{
 		ClearScreen();
 		std::cout << "Months were not consecutive! So the program couldn't function properly. Please try again!" << std::endl;
 		Setup(numberOfMonths);
 		Add(numberOfMonths, incomeArr, expenseArr, balanceArr);
-	}*/
+	}
 }
 
 
@@ -293,9 +294,16 @@ void Search(std::string month) //Discloses information about a selected by the u
 	if (balanceArr[TurnToInt(month) - 1] > 0) std::cout << "+" << balanceArr[TurnToInt(month) - 1] << std::endl;
 	else std::cout << balanceArr[TurnToInt(month) - 1] << std::endl;
 	float expense_ratio;
-	expense_ratio = (expenseArr[TurnToInt(month) - 1] / incomeArr[TurnToInt(month) - 1]) * 100;
-	std::cout << "Expense ratio: " << expense_ratio << "%" << std::endl;
-	std::cout << std::endl;
+	if ((incomeArr[TurnToInt(month) - 1) == 0)
+	{
+		std::cout << "Expense ratio is undefined (income is 0).";
+	}
+	else if ((incomeArr[TurnToInt(month) - 1) != 0)
+	{
+		expense_ratio = (expenseArr[TurnToInt(month) - 1] / incomeArr[TurnToInt(month) - 1]) * 100;
+		std::cout << "Expense ratio: " << expense_ratio << "%" << std::endl;
+		std::cout << std::endl;
+	}
 }
 
 void Sort(std::string type) //Sorts the three months with the highest income, expense or balance values in descending order.
@@ -413,13 +421,36 @@ void Forecast(int months_ahead)
 		current_savings += balanceArr[i];
 	}
 
-	float average_monthly_change = 0;
-	float monthly_change = 0;
-	for (int i = 0; i < numberOfMonths-1; i++)
+	int earliest = 13, latest = 0; //Initialized variables to determine the earliest and the latest month:
+	int earliestIndex = -1, latestIndex = -1;
+
+	for (int i = 0; i < 12; i++) 
 	{
-		monthly_change += (balanceArr[i + 1] - balanceArr[i]);
+		if (monthArr[i] != 0) 
+		{
+			if (monthArr[i] < earliest) 
+			{
+				earliest = monthArr[i];
+				earliestIndex = i;
+			}
+			if (monthArr[i] > latest) 
+			{
+				latest = monthArr[i];
+				latestIndex = i;
+			}
+		}
 	}
-	average_monthly_change = monthly_change / (numberOfMonths - 1);
+
+	float average_monthly_change = 0;
+	if (numberOfMonths > 1 && earliestIndex != -1 && latestIndex != -1) 
+	{
+		float total_change = balanceArr[latestIndex] - balanceArr[earliestIndex];
+		int months_between = latest - earliest;
+		if (months_between > 0) 
+		{
+			average_monthly_change = total_change / months_between;
+		}
+	}
 
 	if (average_monthly_change > 0)
 	{
@@ -427,7 +458,7 @@ void Forecast(int months_ahead)
 		std::cin >> months_ahead;
 		while (months_ahead < 1)
 		{
-			std::cout << "Incorrect input! Enter a number grater than 0.";
+			std::cout << "Incorrect input! Enter a number greater than 0.";
 			std::cin >> months_ahead;
 		}
 		float predicted_savings;
@@ -466,6 +497,11 @@ int main()
 	std::cout << std::endl;
 	while (selected_function != "Report" && selected_function != "Search" && selected_function != "Sort" && selected_function != "Forecast")
 	{
+		if (selected_function == "End")
+		{
+			ClearScreen();
+			std::cout << "Thank you for using my program! :) ";
+		}
 		std::cout << "Wrong input! Please try again!";
 		std::cin >> selected_function;
 	}
