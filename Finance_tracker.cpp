@@ -503,8 +503,8 @@ void Chart() //Creates a visual representation of the user's balance throughout 
 	std::cout << "================YEARLY FINANCIAL CHART================" << std::endl;
 
 	int matrixScale[5][1] = { 0 }; //Initiating a scale matrix for the left side of the graph that is made up from integers.
-	float max_balance = balanceArr[0];
-	float min_balance = balanceArr[0];
+	float max_balance = 0;
+	float min_balance = 0;
 	for (int i = 0; i < MONTHS_IN_YEAR; i++) //Finds the highest and lowest balance in the array.
 	{
 		if (monthArr[i] != 0)
@@ -554,19 +554,29 @@ void Chart() //Creates a visual representation of the user's balance throughout 
 		std::cout << " | ";
 		for (int j = 0; j < MONTHS_IN_YEAR; j++)
 		{
-			std::cout << matrixHashmarks[i][j] << "  ";
+			if (monthArr[j] != 0)
+			{
+				std::cout << matrixHashmarks[i][j] << "  ";
+			}
 		}
 		std::cout << std::endl;
 	}
 
 	int needed_free_space = max_digits;
 	std::cout << "------------------------------------------------------" << std::endl;
-	for (int i = 0; i < needed_free_space; i++)
+	for (int i = 0; i < needed_free_space + 2; i++)
 	{
 		std::cout << " ";
 	}
-	std::cout << "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec" << std::endl;
-	std::cout << std::endl;
+	for (int j = 0; j < MONTHS_IN_YEAR; j++)
+	{
+		if (monthArr[j] != 0)
+		{
+			TurnToStr(monthArr[j]);
+			std::cout << " ";
+		}
+	}
+	std::cout << std::endl << std::endl;
 }
 
 void Exit()
