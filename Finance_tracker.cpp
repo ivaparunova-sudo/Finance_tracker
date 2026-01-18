@@ -136,7 +136,7 @@ void ClearScreen() //Clears the output window.
 	system("CLS"); //Works only on Windows(CLS command).
 }
 
-void Setup(int& numberOfMonths) //Initializes a new financial profile for a number of months specified by the user.
+void Setup() //Initializes a new financial profile for a number of months specified by the user.
 {
 	const int MONTHS_IN_YEAR = 12;
 	std::cout << "Enter a number of months: ";
