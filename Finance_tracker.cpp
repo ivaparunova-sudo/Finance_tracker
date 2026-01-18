@@ -18,15 +18,12 @@
 #include <string>
 
 int numberOfMonths = 1; //The number of months for which the program will generate a financial report.
-std::string month;
-std::string type;
 float incomeArr[12] = { 0 };
 float expenseArr[12] = { 0 };
 float balanceArr[12] = { 0 };
 int monthArr[12] = { 0 }; //An array containing the months that the program is working with.
-int months_ahead = 0;
 
-void TurnToStr(int month) //Transforms an integer from 1-12 into the designated month.
+void TurnToStr(const int& month) //Transforms an integer from 1-12 into the designated month.
 {
 	std::string monthInLet;
 	switch (month)
@@ -152,11 +149,11 @@ void Setup(int& numberOfMonths) //Initializes a new financial profile for a numb
 		}
 		else if (numberOfMonths != 1)
 		{
-			std::cout << "Invalid number of months! Try again! " << std::endl;
+			std::cout << "Invalid number of months! Try again: " << std::endl;
 			std::cin >> numberOfMonths;
 		}
 	}
-	std::cout << "Profile created succesfully." << std::endl;
+	std::cout << "Profile created succesfully!" << std::endl;
 }
 
 void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanceArr[]) //Takes the user's input and stores it in order of the months in the designated arreys. 
@@ -226,6 +223,13 @@ void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanc
 	if (!areMonthsConsecutive(monthArr, numberOfMonths))
 	{
 		ClearScreen();
+		for (int i = 0; i < 12; i++) //Emptying the old information from the arreys in order to start again.
+		{
+			monthArr[i] = 0;
+			incomeArr[i] = 0;
+			expenseArr[i] = 0;
+			balanceArr[i] = 0;
+		}
 		std::cout << "Months were not consecutive! So the program couldn't function properly. Please try again!" << std::endl;
 		Setup(numberOfMonths);
 		Add(numberOfMonths, incomeArr, expenseArr, balanceArr);
@@ -239,21 +243,21 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 	float total_expense = 0;
 	float total_balance = 0;
 
-	for (int i = 0; i < numberOfMonths; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		if (monthArr[i] != 0) //Checks if the month is part of the current data the program is working with.
 		{
 			total_income += incomeArr[i];
 		}
 	}
-	for (int i = 0; i < numberOfMonths; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		if (monthArr[i] != 0)
 		{
 			total_expense += expenseArr[i];
 		}
 	}
-	for (int i = 0; i < numberOfMonths; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		if (monthArr[i] != 0)
 		{
@@ -261,14 +265,13 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 		}
 	}
 	float average_balance = (total_balance / numberOfMonths);
-	std::cout << "   Month    |   Income   |   Expense   |   Balance  " << std::endl;
-	std::cout << "----------------------------------------------------" << std::endl;
-	int temp = numberOfMonths; //It keeps the original value of numberOfMonths intact.
-	for (int i = 0; i < temp; i++)
+	std::cout << " Month | Income | Expense | Balance " << std::endl;
+	std::cout << "------------------------------------" << std::endl;
+
+	for (int i = 0; i < 12; i++)
 	{
 		if (monthArr[i] == 0) //Skips the months in the arrey that are not part of the program.
 		{
-			temp++;
 			continue;
 		}
 		TurnToStr(monthArr[i]);
@@ -276,7 +279,7 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 		if (balanceArr[i] > 0) std::cout << "+" << balanceArr[i] << std::endl;
 		else std::cout << balanceArr[i] << std::endl;
 	}
-	std::cout << "----------------------------------------------------" << std::endl;
+	std::cout << "------------------------------------" << std::endl;
 	std::cout << "Total income: " << total_income << std::endl;
 	std::cout << "Total expense: " << total_expense << std::endl;
 	std::cout << "Average balance: ";
@@ -285,15 +288,16 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 	std::cout << std::endl;
 }
 
-void Search(std::string month) //Discloses information about a selected by the user month.
+void Search() //Discloses information about a selected by the user month.
 {
+	std::string month;
 	std::cout << "Pick a month: ";
 	std::cin >> month;
 	bool month_in_monthArr = false;
 	while (!month_in_monthArr)
 	{
 		month_in_monthArr = false; // Resets the validation process.
-		for (int i = 0; i < numberOfMonths; i++)
+		for (int i = 0; i < 12; i++)
 		{
 			if (monthArr[i] == TurnToInt(month))
 			{
@@ -316,7 +320,7 @@ void Search(std::string month) //Discloses information about a selected by the u
 	float expense_ratio;
 	if (incomeArr[TurnToInt(month) - 1] == 0)
 	{
-		std::cout << "Expense ratio is undefined (income is 0).";
+		std::cout << "Expense ratio is undefined (income is 0)!";
 	}
 	else if ((incomeArr[TurnToInt(month) - 1]) != 0)
 	{
@@ -326,30 +330,31 @@ void Search(std::string month) //Discloses information about a selected by the u
 	}
 }
 
-void Sort(std::string type) //Sorts the three months with the highest income, expense or balance values in descending order.
+void Sort() //Sorts the three months with the highest income, expense or balance values in descending order.
 {
-	std::cout << "Sort by: ";
+	std::string type;
+	std::cout << "Sort by income, expense or balance: ";
 	std::cin >> type;
-	while (type != "income" && type != "expense" && type != "balance")
+	while (type != "income" && type != "Income" && type != "expense" && type != "Expense" && type != "balance" && type != "Balance")
 	{
 		std::cout << "Wrong input! Please choose from: income, expense or balance." << std::endl;
 		std::cin >> type;
 	}
 	float tempIncome[12], tempExpense[12], tempBalance[12]; // Initializing copies of the arrays so that the original order is preserved.
 	int tempMonth[12];
-	for (int i = 0; i < numberOfMonths; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		tempIncome[i] = incomeArr[i];
 		tempExpense[i] = expenseArr[i];
 		tempBalance[i] = balanceArr[i];
 		tempMonth[i] = monthArr[i];
 	}
-	int limit = (numberOfMonths < 3) ? numberOfMonths : 3; //Makes sure that if the program works with only two months there doesn't occur an error.
+
 	if (type == "income")
 	{
-		for (int i = 0; i < numberOfMonths; i++)
+		for (int i = 0; i < 12; i++)
 		{
-			for (int j = i + 1; j < numberOfMonths; j++)
+			for (int j = i + 1; j < 12; j++)
 			{
 				if (tempIncome[i] < tempIncome[j]) //Sorting in descending order by switching up the places of the values in each arrey.
 				{
@@ -361,23 +366,21 @@ void Sort(std::string type) //Sorts the three months with the highest income, ex
 			}
 		}
 		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
-		for (int i = 0; i < limit; i++)
+		int printed = 0; //Counter for the printed out months.                
+		for (int i = 0; i < 12 && printed < 3; i++)
 		{
-			int temp = numberOfMonths;
-			if (tempMonth[i] == 0)
-			{
-				temp++;
+			if (tempMonth[i] == 0) //Skips the unneeded months.
 				continue;
-			}
 			TurnToStr(tempMonth[i]);
 			std::cout << " : " << tempIncome[i] << std::endl;
+			printed++;
 		}
 	}
 	else if (type == "expense")
 	{
-		for (int i = 0; i < numberOfMonths; i++)
+		for (int i = 0; i < 12; i++)
 		{
-			for (int j = i + 1; j < numberOfMonths; j++)
+			for (int j = i + 1; j < 12; j++)
 			{
 				if (tempExpense[i] < tempExpense[j])
 				{
@@ -389,23 +392,21 @@ void Sort(std::string type) //Sorts the three months with the highest income, ex
 			}
 		}
 		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
-		for (int i = 0; i < limit; i++)
+		int printed = 0;
+		for (int i = 0; i < 12 && printed < 3; i++)
 		{
-			int temp = numberOfMonths;
 			if (tempMonth[i] == 0)
-			{
-				temp++;
 				continue;
-			}
 			TurnToStr(tempMonth[i]);
 			std::cout << " : " << tempExpense[i] << std::endl;
+			printed++;
 		}
 	}
 	else if (type == "balance")
 	{
-		for (int i = 0; i < numberOfMonths; i++)
+		for (int i = 0; i < 12; i++)
 		{
-			for (int j = i + 1; j < numberOfMonths; j++)
+			for (int j = i + 1; j < 12; j++)
 			{
 				if (tempBalance[i] < tempBalance[j])
 				{
@@ -417,31 +418,33 @@ void Sort(std::string type) //Sorts the three months with the highest income, ex
 			}
 		}
 		std::cout << "Sorted by monthly " << type << "(descending) :" << std::endl;
-		for (int i = 0; i < limit; i++)
+		int printed = 0;
+		for (int i = 0; i < 12 && printed < 3; i++)
 		{
-			int temp = numberOfMonths;
 			if (tempMonth[i] == 0)
-			{
-				temp++;
 				continue;
-			}
 			TurnToStr(tempMonth[i]);
 			std::cout << " : ";
-			if (tempBalance[i] > 0) std::cout << "+" << tempBalance[i] << std::endl;
-			else std::cout << tempBalance[i] << std::endl;
+			if (tempBalance[i] > 0)
+			{
+				std::cout << "+";
+			}
+			std::cout << tempBalance[i] << std::endl;
+			printed++;
 		}
 	}
 }
 
-void Forecast(int months_ahead) //Forecasts savings or debts based on the current trend.
+void Forecast() //Forecasts savings or debts based on the current trend.
 {
+	int months_ahead = 0;
 	float current_savings = 0;
-	for (int i = 0; i < numberOfMonths; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		current_savings += balanceArr[i];
 	}
 
-	int earliest = 13, latest = 0; //Initialized variables to determine the earliest and the latest month:
+	int earliest = 13, latest = 0; //Initialized variables to determine the earliest and the latest month.
 	int earliestIndex = -1, latestIndex = -1;
 
 	for (int i = 0; i < 12; i++)
@@ -478,7 +481,7 @@ void Forecast(int months_ahead) //Forecasts savings or debts based on the curren
 		std::cin >> months_ahead;
 		while (months_ahead < 1)
 		{
-			std::cout << "Incorrect input! Enter a number greater than 0.";
+			std::cout << "Incorrect input! Enter a number greater than 0: ";
 			std::cin >> months_ahead;
 		}
 		float predicted_savings;
@@ -503,12 +506,12 @@ void Forecast(int months_ahead) //Forecasts savings or debts based on the curren
 
 void Chart() //Creates a visual representation of the user's balance troughout the year dependidng on the months the program is working with.
 {
-	std::cout << "================YEARLY FINANTIAL CHART================";
+	std::cout << "================YEARLY FINANTIAL CHART================" << std::endl;
 
-	float matrixScale[5][1] = { 0 }; //Initiateing a scale matrix for the left side of the graph that is made up from integers.
+	int matrixScale[5][1] = { 0 }; //Initiateing a scale matrix for the left side of the graph that is made up from integers.
 	float max_balance = balanceArr[0];
 	float min_balance = balanceArr[0];
-	for (int i = 0; i < numberOfMonths; i++) //Finds the highest and  balance in the arrey.
+	for (int i = 0; i < 12; i++) //Finds the highest and  balance in the arrey.
 	{
 		if (balanceArr[i] > max_balance) max_balance = balanceArr[i];
 		if (balanceArr[i] < min_balance) min_balance = balanceArr[i];
@@ -534,7 +537,7 @@ void Chart() //Creates a visual representation of the user's balance troughout t
 
 	for (int i = 0; i < 5; i++) //Printing the matices.
 	{
-		std::cout << matrixScale[i] << " | ";
+		std::cout << matrixScale[i][0] << " | ";
 		for (int j = 0; j < 12; j++)
 		{
 			std::cout << matrixHashmarks[i][j] << "  ";
@@ -552,7 +555,7 @@ void Chart() //Creates a visual representation of the user's balance troughout t
 	}
 	char freeSpaceArr[1] = { 0 }; //Created arrey for proper design uses.
 	freeSpaceArr[needed_free_space] = { ' ' };
-	std::cout << freeSpaceArr << "-----------------------------------------------";
+	std::cout << freeSpaceArr << "-----------------------------------------------" << std::endl;
 	std::cout << freeSpaceArr << "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec";
 }
 
@@ -580,7 +583,7 @@ int main()
 			ClearScreen();
 			std::cout << "Thank you for using my program! :) ";
 		}
-		std::cout << "Wrong input! Please try again!";
+		std::cout << "Wrong input! Please try again: ";
 		std::cin >> selected_function;
 	}
 	while (selected_function != "End")
@@ -591,21 +594,21 @@ int main()
 		}
 		else if (selected_function == "Search")
 		{
-			Search(month);
+			Search();
 		}
 		else if (selected_function == "Sort")
 		{
-			Sort(type);
+			Sort();
 		}
 		else if (selected_function == "Forecast")
 		{
-			Forecast(months_ahead);
+			Forecast();
 		}
 		else if (selected_function == "Chart")
 		{
 			Chart();
 		}
-		std::cout << "Pick again!" << std::endl;
+		std::cout << "Pick again! :)" << std::endl;
 		std::cout << std::endl;
 		std::cin >> selected_function;
 		if (selected_function == "End")
@@ -616,4 +619,3 @@ int main()
 	}
 	return 0;
 }
-
