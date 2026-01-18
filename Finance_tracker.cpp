@@ -110,17 +110,15 @@ bool areMonthsConsecutive(int monthArr[], int numberOfMonths)
 	return (max - min + 1 == count);
 }
 
-int NumberOfDigg(int number) //Returns the number of diggits in a number.
+int NumberOfDig(int number) //Returns the number of digits in a number.
 {
-	std::cin >> number;
 	if (number < 0)
 	{
 		number = -number;
 	}
 	if (number == 0)
 	{
-		std::cout << 1;
-		return -1;
+		return 1;
 	}
 	int count = 0;
 	while (number > 0)
@@ -128,7 +126,7 @@ int NumberOfDigg(int number) //Returns the number of diggits in a number.
 		number /= 10;
 		count++;
 	}
-	std::cout << count;
+	return count;
 }
 
 void ClearScreen() //Clears the output window.
@@ -153,7 +151,7 @@ void Setup(int& numberOfMonths) //Initializes a new financial profile for a numb
 			std::cin >> numberOfMonths;
 		}
 	}
-	std::cout << "Profile created succesfully!" << std::endl;
+	std::cout << "Profile created successfully!" << std::endl;
 }
 
 void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanceArr[]) //Takes the user's input and stores it in order of the months in the designated arreys. 
@@ -504,9 +502,9 @@ void Forecast() //Forecasts savings or debts based on the current trend.
 	}
 }
 
-void Chart() //Creates a visual representation of the user's balance troughout the year dependidng on the months the program is working with.
+void Chart() //Creates a visual representation of the user's balance throughout the year dependidng on the months the program is working with.
 {
-	std::cout << "================YEARLY FINANTIAL CHART================" << std::endl;
+	std::cout << "================YEARLY FINANCIAL CHART================" << std::endl;
 
 	int matrixScale[5][1] = { 0 }; //Initiateing a scale matrix for the left side of the graph that is made up from integers.
 	float max_balance = balanceArr[0];
@@ -546,17 +544,89 @@ void Chart() //Creates a visual representation of the user's balance troughout t
 	}
 
 	int needed_free_space = 1;
-	for (int i = 0; i < 5; i++) //Finds the number with the highest diggit count. It will help with the better visualization of the graph.
+	for (int i = 0; i < 5; i++) //Finds the number with the highest digit count. It will help with the better visualization of the graph.
 	{
-		if (NumberOfDigg(matrixScale[i][0]) > needed_free_space)
+		if (NumberOfDig(matrixScale[i][0]) > needed_free_space)
 		{
-			needed_free_space = NumberOfDigg(matrixScale[i][0]);
+			needed_free_space = NumberOfDig(matrixScale[i][0]);
 		}
 	}
-	char freeSpaceArr[1] = { 0 }; //Created arrey for proper design uses.
-	freeSpaceArr[needed_free_space] = { ' ' };
-	std::cout << freeSpaceArr << "-----------------------------------------------" << std::endl;
-	std::cout << freeSpaceArr << "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec";
+	for (int i = 0; i < needed_free_space + 2; i++)
+	{
+		std::cout << " ";
+	}
+	std::cout << "-----------------------------------------------" << std::endl;
+	for (int i = 0; i < needed_free_space + 2; i++)
+	{
+		std::cout << " ";
+	}
+	std::cout << "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec" << std::endl;
+}
+
+void Exit()
+{
+	ClearScreen();
+
+	std::cout << "========================================" << std::endl;
+	std::cout << "       FINAL FINANCIAL REPORT" << std::endl;
+	std::cout << "========================================" << std::endl;
+	std::cout << std::endl;
+
+	float total_income = 0;
+	float total_expense = 0;
+	float total_balance = 0;
+
+	for (int i = 0; i < 12; i++)
+	{
+		if (monthArr[i] != 0)
+		{
+			total_income += incomeArr[i];
+			total_expense += expenseArr[i];
+			total_balance += balanceArr[i];
+		}
+	}
+
+	float average_balance = total_balance / numberOfMonths;
+
+	std::cout << " Month | Income   | Expense  | Balance " << std::endl;
+	std::cout << "--------------------------------------------" << std::endl;
+
+	for (int i = 0; i < 12; i++)
+	{
+		if (monthArr[i] == 0)
+		{
+			continue;
+		}
+		std::cout << "  ";
+		TurnToStr(monthArr[i]);
+		std::cout << "  | " << incomeArr[i] << " | " << expenseArr[i] << " | ";
+		if (balanceArr[i] > 0)
+		{
+			std::cout << "+" << balanceArr[i] << std::endl;
+		}
+		else
+		{
+			std::cout << balanceArr[i] << std::endl;
+		}
+	}
+
+	std::cout << "--------------------------------------------" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "SUMMARY:" << std::endl;
+	std::cout << "  Total income:    " << total_income << std::endl;
+	std::cout << "  Total expense:   " << total_expense << std::endl;
+	std::cout << "  Total balance:   ";
+	if (total_balance > 0) std::cout << "+";
+	std::cout << total_balance << std::endl;
+	std::cout << "  Average balance: ";
+	if (average_balance > 0) std::cout << "+";
+	std::cout << average_balance << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "========================================" << std::endl;
+	std::cout << "Thank you for using my Finance Tracker!" << std::endl;
+	std::cout << "========================================" << std::endl;
 }
 
 int main()
@@ -570,23 +640,22 @@ int main()
 	std::cout << "- see a generated report on your finances\n- search information about a specific month" << std::endl;
 	std::cout << "- see the three months with the highest income, expense or balance values" << std::endl;
 	std::cout << "- see a forecast for your savings or debts based on the current trend" << std::endl;
-	std::cout << "- see a visual representation of your balance troughout the year" << std::endl;
+	std::cout << "- see a visual representation of your balance throughout the year" << std::endl;
 	std::cout << "To proceed pick one of the following: Report, Search, Sort, Forecast, Chart;" << std::endl;
-	std::cout << "If you want to end the program write: End;" << std::endl;
+	std::cout << "If you want to end the program and get a summery write: Exit;" << std::endl;
 	std::string selected_function;
 	std::cin >> selected_function;
 	std::cout << std::endl;
 	while (selected_function != "Report" && selected_function != "Search" && selected_function != "Sort" && selected_function != "Forecast" && selected_function != "Chart")
 	{
-		if (selected_function == "End")
+		if (selected_function == "Exit")
 		{
-			ClearScreen();
-			std::cout << "Thank you for using my program! :) ";
+			Exit();
 		}
 		std::cout << "Wrong input! Please try again: ";
 		std::cin >> selected_function;
 	}
-	while (selected_function != "End")
+	while (selected_function != "Exit")
 	{
 		if (selected_function == "Report")
 		{
@@ -611,10 +680,9 @@ int main()
 		std::cout << "Pick again! :)" << std::endl;
 		std::cout << std::endl;
 		std::cin >> selected_function;
-		if (selected_function == "End")
+		if (selected_function == "Exit")
 		{
-			ClearScreen();
-			std::cout << "Thank you for using my program! :) ";
+			Exit();
 		}
 	}
 	return 0;
