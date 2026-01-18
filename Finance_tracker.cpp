@@ -154,7 +154,7 @@ void Setup(int& numberOfMonths) //Initializes a new financial profile for a numb
 	std::cout << "Profile created successfully!" << std::endl;
 }
 
-void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanceArr[]) //Takes the user's input and stores it in order of the months in the designated arreys. 
+void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanceArr[]) //Takes the user's input and stores it in order of the months in the designated arrays. 
 {
 	int count = 0;
 	while (count < numberOfMonths) //This allows months to be added in any order while storing them consecutively, regardless of the starting month.
@@ -221,7 +221,7 @@ void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanc
 	if (!areMonthsConsecutive(monthArr, numberOfMonths))
 	{
 		ClearScreen();
-		for (int i = 0; i < 12; i++) //Emptying the old information from the arreys in order to start again.
+		for (int i = 0; i < 12; i++) //Emptying the old information from the arrays in order to start again.
 		{
 			monthArr[i] = 0;
 			incomeArr[i] = 0;
@@ -268,7 +268,7 @@ void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generat
 
 	for (int i = 0; i < 12; i++)
 	{
-		if (monthArr[i] == 0) //Skips the months in the arrey that are not part of the program.
+		if (monthArr[i] == 0) //Skips the months in the array that are not part of the program.
 		{
 			continue;
 		}
@@ -354,7 +354,7 @@ void Sort() //Sorts the three months with the highest income, expense or balance
 		{
 			for (int j = i + 1; j < 12; j++)
 			{
-				if (tempIncome[i] < tempIncome[j]) //Sorting in descending order by switching up the places of the values in each arrey.
+				if (tempIncome[i] < tempIncome[j]) //Sorting in descending order by switching up the places of the values in each array.
 				{
 					SwapFlo(tempIncome[i], tempIncome[j]);
 					SwapFlo(tempExpense[i], tempExpense[j]);
@@ -502,17 +502,20 @@ void Forecast() //Forecasts savings or debts based on the current trend.
 	}
 }
 
-void Chart() //Creates a visual representation of the user's balance throughout the year dependidng on the months the program is working with.
+void Chart() //Creates a visual representation of the user's balance throughout the year depending on the months the program is working with.
 {
 	std::cout << "================YEARLY FINANCIAL CHART================" << std::endl;
 
 	int matrixScale[5][1] = { 0 }; //Initiateing a scale matrix for the left side of the graph that is made up from integers.
 	float max_balance = balanceArr[0];
 	float min_balance = balanceArr[0];
-	for (int i = 0; i < 12; i++) //Finds the highest and  balance in the arrey.
+	for (int i = 0; i < 12; i++) //Finds the highest and lowest balance in the array.
 	{
-		if (balanceArr[i] > max_balance) max_balance = balanceArr[i];
-		if (balanceArr[i] < min_balance) min_balance = balanceArr[i];
+		if (monthArr[i] != 0)
+		{
+			if (balanceArr[i] > max_balance) max_balance = balanceArr[i];
+			if (balanceArr[i] < min_balance) min_balance = balanceArr[i];
+		}
 	}
 	matrixScale[0][0] = max_balance;
 	matrixScale[4][0] = min_balance;
@@ -533,9 +536,26 @@ void Chart() //Creates a visual representation of the user's balance throughout 
 		}
 	}
 
+	int max_digits = 1; //Finding the longest digit number so the graph can be created acoringly.
+	for (int i = 0; i < 5; i++)
+	{
+		int current_digits = NumberOfDig(matrixScale[i][0]);
+		if (current_digits > max_digits)
+		{
+			max_digits = current_digits;
+		}
+	}
+
 	for (int i = 0; i < 5; i++) //Printing the matices.
 	{
-		std::cout << matrixScale[i][0] << " | ";
+		int digits = NumberOfDig(matrixScale[i][0]);
+
+		std::cout << matrixScale[i][0];
+		for (int k = digits; k < max_digits; k++) //Adding intervals for better visualization.
+		{
+			std::cout << " ";
+		}
+		std::cout << " | ";
 		for (int j = 0; j < 12; j++)
 		{
 			std::cout << matrixHashmarks[i][j] << "  ";
@@ -543,24 +563,14 @@ void Chart() //Creates a visual representation of the user's balance throughout 
 		std::cout << std::endl;
 	}
 
-	int needed_free_space = 1;
-	for (int i = 0; i < 5; i++) //Finds the number with the highest digit count. It will help with the better visualization of the graph.
-	{
-		if (NumberOfDig(matrixScale[i][0]) > needed_free_space)
-		{
-			needed_free_space = NumberOfDig(matrixScale[i][0]);
-		}
-	}
-	for (int i = 0; i < needed_free_space + 2; i++)
-	{
-		std::cout << " ";
-	}
-	std::cout << "-----------------------------------------------" << std::endl;
-	for (int i = 0; i < needed_free_space + 2; i++)
+	int needed_free_space = max_digits;
+	std::cout << "------------------------------------------------------" << std::endl;
+	for (int i = 0; i < needed_free_space; i++)
 	{
 		std::cout << " ";
 	}
 	std::cout << "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec" << std::endl;
+	std::cout << std::endl;
 }
 
 void Exit()
@@ -633,16 +643,22 @@ int main()
 {
 	std::cout << "Hello! Welcome to your Finance tracker program!" << std::endl;
 	std::cout << "Let's set it up!" << std::endl;
+	std::cout << std::endl;
 	Setup(numberOfMonths);
+	std::cout << std::endl;
 	std::cout << "Now for each consecutive month add the income and expense!" << std::endl;
+	std::cout << std::endl;
 	Add(numberOfMonths, incomeArr, expenseArr, balanceArr);
 	std::cout << "Choose what you want to see next! Do you want to:" << std::endl;
-	std::cout << "- see a generated report on your finances\n- search information about a specific month" << std::endl;
-	std::cout << "- see the three months with the highest income, expense or balance values" << std::endl;
-	std::cout << "- see a forecast for your savings or debts based on the current trend" << std::endl;
-	std::cout << "- see a visual representation of your balance throughout the year" << std::endl;
-	std::cout << "To proceed pick one of the following: Report, Search, Sort, Forecast, Chart;" << std::endl;
-	std::cout << "If you want to end the program and get a summery write: Exit;" << std::endl;
+	std::cout << "=================================================" << std::endl;
+	std::cout << "1. Report - see a generated report on your finances" << std::endl;
+	std::cout << "2. Search - search information about a specific month" << std::endl;
+	std::cout << "3. Sort - see the top three months sorted by income, expense or balance" << std::endl;
+	std::cout << "4. Forecast - see a forecast for your savings or debts based on the current trend" << std::endl;
+	std::cout << "5. Chart - see a visual representation of your balance throughout the year" << std::endl;
+	std::cout << std::endl;
+	std::cout << "To proceed write one of the following: Report, Search, Sort, Forecast, Chart" << std::endl;
+	std::cout << "If you want to end the program and get a summery write: Exit" << std::endl;
 	std::string selected_function;
 	std::cin >> selected_function;
 	std::cout << std::endl;
