@@ -31,36 +31,36 @@ void TurnToStr(int month) //Transforms an integer from 1-12 into the designated 
 	std::string monthInLet;
 	switch (month)
 	{
-	case 1: monthInLet = "January"; break;
-	case 2: monthInLet = "February"; break;
-	case 3: monthInLet = "March"; break;
-	case 4: monthInLet = "April"; break;
+	case 1: monthInLet = "Jan"; break;
+	case 2: monthInLet = "Feb"; break;
+	case 3: monthInLet = "Mar"; break;
+	case 4: monthInLet = "Apr"; break;
 	case 5:  monthInLet = "May"; break;
-	case 6:  monthInLet = "June"; break;
-	case 7:  monthInLet = "July"; break;
-	case 8:  monthInLet = "August"; break;
-	case 9:  monthInLet = "September"; break;
-	case 10:  monthInLet = "October"; break;
-	case 11:  monthInLet = "November"; break;
-	case 12:  monthInLet = "December"; break;
+	case 6:  monthInLet = "Jun"; break;
+	case 7:  monthInLet = "Jul"; break;
+	case 8:  monthInLet = "Aug"; break;
+	case 9:  monthInLet = "Sep"; break;
+	case 10:  monthInLet = "Oct"; break;
+	case 11:  monthInLet = "Nov"; break;
+	case 12:  monthInLet = "Dec"; break;
 	}
 	std::cout << monthInLet;
 }
 
 int TurnToInt(const std::string& month) //Transforms a month from a string into the corresponding integer from 1-12.
 {
-	if (month == "January") return 1;
-	else if (month == "February") return 2;
-	else if (month == "March") return 3;
-	else if (month == "April") return 4;
+	if (month == "Jan" || month == "January") return 1;
+	else if (month == "Feb" || month == "February") return 2;
+	else if (month == "Mar" || month == "March") return 3;
+	else if (month == "Apr" || month == "April") return 4;
 	else if (month == "May") return 5;
-	else if (month == "June") return 6;
-	else if (month == "July") return 7;
-	else if (month == "August") return 8;
-	else if (month == "September") return 9;
-	else if (month == "October") return 10;
-	else if (month == "November") return 11;
-	else if (month == "December") return 12;
+	else if (month == "Jun" || month == "June") return 6;
+	else if (month == "Jul" || month == "July") return 7;
+	else if (month == "Aug" || month == "August") return 8;
+	else if (month == "Sep" || month == "September") return 9;
+	else if (month == "Oct" || month == "October") return 10;
+	else if (month == "Nov" || month == "November") return 11;
+	else if (month == "Dec" || month == "December") return 12;
 
 	return -1; // In case of invalid month.
 }
@@ -111,6 +111,27 @@ bool areMonthsConsecutive(int monthArr[], int numberOfMonths)
 		return false;
 
 	return (max - min + 1 == count);
+}
+
+int NumberOfDigg(int number) //Returns the number of diggits in a number.
+{
+	std::cin >> number;
+	if (number < 0)
+	{
+		number = -number;
+	}
+	if (number == 0)
+	{
+		std::cout << 1;
+		return -1;
+	}
+	int count = 0;
+	while (number > 0)
+	{
+		number /= 10;
+		count++;
+	}
+	std::cout << count;
 }
 
 void ClearScreen() //Clears the output window.
@@ -412,7 +433,7 @@ void Sort(std::string type) //Sorts the three months with the highest income, ex
 	}
 }
 
-void Forecast(int months_ahead)
+void Forecast(int months_ahead) //Forecasts savings or debts based on the current trend.
 {
 	float current_savings = 0;
 	for (int i = 0; i < numberOfMonths; i++)
@@ -480,6 +501,79 @@ void Forecast(int months_ahead)
 	}
 }
 
+void Chart() //Creates a visual representation of the user's balance troughout the year dependidng on the months the program is working with.
+{
+	std::cout << "================YEARLY FINANTIAL CHART================";
+
+	int matrixScale[5][1] = { 0 }; //Initiateing a scale matrix for the left side of the graph that is made up from integers.
+	float max_balance = 0;
+	float min_balance = 0;
+	for (int i = 0; i < numberOfMonths - 1; i++) //Finds the highest balance in the arrey.
+	{
+		if (balanceArr[i] > max_balance) max_balance = balanceArr[i];
+	}
+	for (int i = 0; i < numberOfMonths - 1; i++) //Finds the lowest balance in the arrey.
+	{
+		if (balanceArr[i] < min_balance) min_balance = balanceArr[i];
+	}
+	matrixScale[0][0] = max_balance;
+	matrixScale[2][0] = (max_balance - min_balance) / 2; //Middle value of the scale.
+	matrixScale[4][0] = min_balance;
+	matrixScale[1][0] = (max_balance + matrixScale[2][0]) / 2;
+	matrixScale[3][0] = (max_balance - matrixScale[2][0]) / 2;
+
+	char matrixHashmarks[5][12] = { 0 }; //Initiateing the hashmarks matrix of the graph.
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 12; j++)
+		{
+			if (balanceArr[i] == 0)
+			{
+				continue;
+			}
+			else if (balanceArr[i] == matrixScale[i][0])
+			{
+				matrixHashmarks[i][j] = '#';
+			}
+		}
+	}
+
+	char matrixLine[5][1] = { 0 };
+	for (int i = 0; i < 5; i++)
+	{
+		matrixLine[i][0] = '|';
+	}
+
+	for (int i = 0; i < 5; i++) //Printing out the matices.
+	{
+		std::cout << matrixScale[i][0];
+	}
+	for (int i = 0; i < 5; i++)
+	{
+		std::cout << matrixLine[i][0];
+	}
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 12; j++)
+		{
+			std::cout << matrixHashmarks[i][j];
+		}
+	}
+
+	int needed_free_space = 1;
+	for (int i = 0; i < 5; i++) //Finds the number with the highest diggit count. It will help with the better visualization of the graph.
+	{
+		if (NumberOfDigg(matrixScale[i][0]) > needed_free_space)
+		{
+			needed_free_space = NumberOfDigg(matrixScale[i][0]);
+		}
+	}
+	char freeSpaceArr[1] = { 0 }; //Created arrey for proper design uses.
+	freeSpaceArr[needed_free_space] = { ' ' };
+	std::cout << freeSpaceArr << "-----------------------------------------------";
+	std::cout << freeSpaceArr << "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec";
+}
+
 int main()
 {
 	std::cout << "Hello! Welcome to your Finance tracker program!" << std::endl;
@@ -488,13 +582,16 @@ int main()
 	std::cout << "Now for each consecutive month add the income and expense!" << std::endl;
 	Add(numberOfMonths, incomeArr, expenseArr, balanceArr);
 	std::cout << "Choose what you want to see next! Do you want to:" << std::endl;
-	std::cout << "See a generated report on your finances, search information about a specific month or see the three months with the highest income, expense or balance values?" << std::endl;
-	std::cout << "To proceed pick one of the following: Report, Search, Sort, Forecast;" << std::endl;
+	std::cout << "- see a generated report on your finances\n- search information about a specific month" << std::endl;
+	std::cout << "- see the three months with the highest income, expense or balance values" << std::endl;
+	std::cout << "- see a forecast for your savings or debts based on the current trend" << std::endl;
+	std::cout << "- see a visual representation of your balance troughout the year" << std::endl;
+	std::cout << "To proceed pick one of the following: Report, Search, Sort, Forecast, Chart;" << std::endl;
 	std::cout << "If you want to end the program write: End;" << std::endl;
 	std::string selected_function;
 	std::cin >> selected_function;
 	std::cout << std::endl;
-	while (selected_function != "Report" && selected_function != "Search" && selected_function != "Sort" && selected_function != "Forecast")
+	while (selected_function != "Report" && selected_function != "Search" && selected_function != "Sort" && selected_function != "Forecast" && selected_function != "Chart")
 	{
 		if (selected_function == "End")
 		{
@@ -521,6 +618,10 @@ int main()
 		else if (selected_function == "Forecast")
 		{
 			Forecast(months_ahead);
+		}
+		else if (selected_function == "Chart")
+		{
+			Chart();
 		}
 		std::cout << "Pick again!" << std::endl;
 		std::cout << std::endl;
