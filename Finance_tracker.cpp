@@ -18,10 +18,10 @@
 #include <string>
 
 int numberOfMonths = 1; //The number of months for which the program will generate a financial report.
-float incomeArr[12] = { 0 };
-float expenseArr[12] = { 0 };
-float balanceArr[12] = { 0 };
-int monthArr[12] = { 0 }; //An array containing the months that the program is working with.
+float incomeArr[12] = { 0 }; //Income per month.
+float expenseArr[12] = { 0 }; //Expenses per month.
+float balanceArr[12] = { 0 }; // Balance per month (income - expense).
+int monthArr[12] = { 0 }; // Tracks which months have data (0 = no data, 1-12 = month number).
 
 void TurnToStr(const int& month) //Transforms an integer from 1-12 into the designated month.
 {
@@ -76,19 +76,19 @@ void SwapInt(int& a, int& b) //Switches the values of two integers.
 	b = temp;
 }
 
-float AbsForFlo(float a) //Returns absolute value of the entered float.
+float AbsForFlo(const float& a) //Returns absolute value of the entered float.
 {
 	if (a < 0) return a * (-1);
 	else return a;
 }
 
-int AbsForInt(int a) //Returns absolute value of the entered int.
+int AbsForInt(const int& a) //Returns absolute value of the entered int.
 {
 	if (a < 0) return a * (-1);
 	else return a;
 }
 
-bool areMonthsConsecutive(int monthArr[], int numberOfMonths)
+bool areMonthsConsecutive(const int monthArr[], int numberOfMonths)
 {
 	const int MONTHS_IN_YEAR = 12;
 	int min = 13;
@@ -157,7 +157,7 @@ void Setup(int& numberOfMonths) //Initializes a new financial profile for a numb
 	std::cout << "Profile created successfully!" << std::endl;
 }
 
-void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanceArr[]) //Takes the user's input and stores it in order of the months in the designated arrays. 
+void Add() //Takes the user's input and stores it in order of the months in the designated arrays. 
 {
 	const int MONTHS_IN_YEAR = 12;
 	int count = 0;
@@ -231,13 +231,13 @@ void Add(int numberOfMonths, float incomeArr[], float expenseArr[], float balanc
 			balanceArr[i] = 0;
 		}
 		std::cout << "Months were not consecutive! So the program couldn't function properly. Please try again!" << std::endl;
-		Setup(numberOfMonths);
-		Add(numberOfMonths, incomeArr, expenseArr, balanceArr);
+		Setup();
+		Add();
 	}
 }
 
 
-void Report(float incomeArr[], float expenseArr[], float balanceArr[]) //Generates a report for the months selected by the user based on the provided input.
+void Report() //Generates a report for the months selected by the user based on the provided input.
 {
 	const int MONTHS_IN_YEAR = 12;
 	float total_income = 0;
@@ -641,11 +641,15 @@ int main()
 	std::cout << "Hello! Welcome to your Finance tracker program!" << std::endl;
 	std::cout << "Let's set it up!" << std::endl;
 	std::cout << std::endl;
-	Setup(numberOfMonths);
+
+	Setup();
+
 	std::cout << std::endl;
 	std::cout << "Now for each consecutive month add the income and expense!" << std::endl;
 	std::cout << std::endl;
-	Add(numberOfMonths, incomeArr, expenseArr, balanceArr);
+
+	Add();
+
 	std::cout << "Choose what you want to see next! Do you want to:" << std::endl;
 	std::cout << "=================================================" << std::endl;
 	std::cout << "1. Report - see a generated report on your finances" << std::endl;
@@ -656,6 +660,7 @@ int main()
 	std::cout << std::endl;
 	std::cout << "To proceed write one of the following: Report, Search, Sort, Forecast, Chart" << std::endl;
 	std::cout << "If you want to end the program and get a summary write: Exit" << std::endl;
+
 	std::string selected_function;
 	std::cin >> selected_function;
 	std::cout << std::endl;
@@ -668,7 +673,7 @@ int main()
 	{
 		if (selected_function == "Report")
 		{
-			Report(incomeArr, expenseArr, balanceArr);
+			Report();
 		}
 		else if (selected_function == "Search")
 		{
