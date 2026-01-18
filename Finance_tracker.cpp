@@ -505,59 +505,41 @@ void Chart() //Creates a visual representation of the user's balance troughout t
 {
 	std::cout << "================YEARLY FINANTIAL CHART================";
 
-	int matrixScale[5][1] = { 0 }; //Initiateing a scale matrix for the left side of the graph that is made up from integers.
-	float max_balance = 0;
-	float min_balance = 0;
-	for (int i = 0; i < numberOfMonths - 1; i++) //Finds the highest balance in the arrey.
+	float matrixScale[5][1] = { 0 }; //Initiateing a scale matrix for the left side of the graph that is made up from integers.
+	float max_balance = balanceArr[0];
+	float min_balance = balanceArr[0];
+	for (int i = 0; i < numberOfMonths; i++) //Finds the highest and  balance in the arrey.
 	{
 		if (balanceArr[i] > max_balance) max_balance = balanceArr[i];
-	}
-	for (int i = 0; i < numberOfMonths - 1; i++) //Finds the lowest balance in the arrey.
-	{
 		if (balanceArr[i] < min_balance) min_balance = balanceArr[i];
 	}
 	matrixScale[0][0] = max_balance;
-	matrixScale[2][0] = (max_balance - min_balance) / 2; //Middle value of the scale.
 	matrixScale[4][0] = min_balance;
-	matrixScale[1][0] = (max_balance + matrixScale[2][0]) / 2;
-	matrixScale[3][0] = (max_balance - matrixScale[2][0]) / 2;
+	matrixScale[2][0] = (max_balance + min_balance) / 2; //Middle value of the scale.
+	matrixScale[1][0] = (matrixScale[0][0] + matrixScale[2][0]) / 2;
+	matrixScale[3][0] = (matrixScale[2][0] + matrixScale[4][0]) / 2;
 
 	char matrixHashmarks[5][12] = { 0 }; //Initiateing the hashmarks matrix of the graph.
 	for (int i = 0; i < 5; i++)
 	{
 		for (int j = 0; j < 12; j++)
 		{
-			if (balanceArr[i] == 0)
-			{
-				continue;
-			}
-			else if (balanceArr[i] == matrixScale[i][0])
+			matrixHashmarks[i][j] = ' ';
+			if (monthArr[j] != 0 && balanceArr[j] >= matrixScale[i][0])
 			{
 				matrixHashmarks[i][j] = '#';
 			}
 		}
 	}
 
-	char matrixLine[5][1] = { 0 };
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 5; i++) //Printing the matices.
 	{
-		matrixLine[i][0] = '|';
-	}
-
-	for (int i = 0; i < 5; i++) //Printing out the matices.
-	{
-		std::cout << matrixScale[i][0];
-	}
-	for (int i = 0; i < 5; i++)
-	{
-		std::cout << matrixLine[i][0];
-	}
-	for (int i = 0; i < 5; i++)
-	{
+		std::cout << matrixScale[i] << " | ";
 		for (int j = 0; j < 12; j++)
 		{
-			std::cout << matrixHashmarks[i][j];
+			std::cout << matrixHashmarks[i][j] << "  ";
 		}
+		std::cout << std::endl;
 	}
 
 	int needed_free_space = 1;
